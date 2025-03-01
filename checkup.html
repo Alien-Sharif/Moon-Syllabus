@@ -91,37 +91,40 @@
         <button type="button" onclick="resetCheckboxes()">Reset</button>
 
     </form>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        loadCheckboxes();
+    });
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            loadCheckboxes();
+    function saveCheckboxes() {
+        let checkboxes = document.querySelectorAll("input[type='checkbox']");
+        let progress = {};
+        checkboxes.forEach((checkbox, index) => {
+            progress["checkbox" + index] = checkbox.checked;
         });
+        localStorage.setItem("progressData", JSON.stringify(progress));
+        alert("Progress Saved!");
+    }
 
-        function saveCheckboxes() {
+    function loadCheckboxes() {
+        let savedData = localStorage.getItem("progressData");
+        if (savedData) {
+            let progress = JSON.parse(savedData);
             let checkboxes = document.querySelectorAll("input[type='checkbox']");
             checkboxes.forEach((checkbox, index) => {
-                localStorage.setItem("checkbox" + index, checkbox.checked);
-            });
-            alert("Progress Saved!");
-        }
-
-        function loadCheckboxes() {
-            let checkboxes = document.querySelectorAll("input[type='checkbox']");
-            checkboxes.forEach((checkbox, index) => {
-                let savedState = localStorage.getItem("checkbox" + index);
-                if (savedState === "true") {
+                if (progress["checkbox" + index]) {
                     checkbox.checked = true;
                 }
             });
         }
+    }
 
-        function resetCheckboxes() {
-            localStorage.clear();
-            let checkboxes = document.querySelectorAll("input[type='checkbox']");
-            checkboxes.forEach(checkbox => checkbox.checked = false);
-            alert("Progress Reset!");
-        }
-    </script>
-
-</body>
+    function resetCheckboxes() {
+        localStorage.removeItem("progressData");
+        let checkboxes = document.querySelectorAll("input[type='checkbox']");
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+        alert("Progress Reset!");
+    }
+</script>
+    <body>
 </html>
